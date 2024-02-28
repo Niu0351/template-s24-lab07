@@ -18,9 +18,27 @@ function newRecentMistakesFirstSorter (): CardOrganizer {
      * @return The ordered cards.
      */
     reorganize: function (cards: CardStatus[]): CardStatus[] {
-      return []
+      // Initialize a counter to track the number of cards processed
+      let count = 0
+
+      // Function to find the index of the most recent failure
+      const indexOfMostRecentFailure = (cardStatus: CardStatus): number => {
+        const results = cardStatus.getResults()
+
+        if (results.length > 0 && !results[results.length - 1]) {
+          return count++
+        }
+        return -1
+      }
+
+      // Sort the cards by the index of their most recent failure in descending order
+      return cards.sort((a, b) => {
+        const indexA = indexOfMostRecentFailure(a)
+        const indexB = indexOfMostRecentFailure(b)
+        return indexB - indexA
+      })
     }
   }
-};
+}
 
 export { newRecentMistakesFirstSorter }
